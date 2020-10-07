@@ -7,6 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { ErrorInterceptor } from './core/Interceptor/error.interceptor';
+import { LoadingInterceptor } from './core/Interceptor/loading.interceptor';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
@@ -17,10 +20,13 @@ import { ErrorInterceptor } from './core/Interceptor/error.interceptor';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    CoreModule
+    CoreModule,
+    NgxSpinnerModule,
+    HomeModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })
