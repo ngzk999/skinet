@@ -26,3 +26,10 @@ a {
         outline: none;
     }
 }
+
+.shopping-cart {
+    cursor: pointer;
+    &:focus {
+        outline: none;
+    }
+}
