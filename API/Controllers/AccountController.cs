@@ -56,7 +56,7 @@ namespace API.Controllers
             return _mapper.Map<Address, AddressDto>(user.Address);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
         {
@@ -93,6 +93,11 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserToReturnDto>> Register(RegisterDto registerDto)
         {
+            if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse{Errors = new []
+                {"Email address is in use"}});
+            }
             var user = new AppUser
             {
                 DisplayName = registerDto.DisplayName,
