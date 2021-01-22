@@ -12,7 +12,8 @@ namespace API.Extensions
             {
                 // the version has to be match
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Skinet API", Version = "v1"});
-
+                
+                // configuring the swagger to have authentication ability
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Description = "JWT Auth Bearer Scheme",

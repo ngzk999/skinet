@@ -1,0 +1,28 @@
+<div class="form-label-group">
+    <input 
+        [ngClass]="(controlDir && controlDir.control && controlDir.control.touched) ? !controlDir.control.valid ? 'is-invalid' : 'is-valid' : null"
+        [type]="type"
+        (input)="onChanged($event.target.value)"
+        (blur)="onTouched()"
+        id="{{label}}"
+        #input
+        class="form-control"
+        placeholder="{{label}}"
+    >
+
+    <!-- for small loading logo, show whenever the client check with server -->
+    <div class="fa fa-spinner fa-spin loader" *ngIf="controlDir && controlDir.control && controlDir.control.status === 'PENDING'"></div>
+    
+    <label for="{{label}}">{{label}}</label>
+    <div class="invalid-feedback" *ngIf="(controlDir && controlDir.control && !controlDir.control.valid && controlDir.control.touched)">
+        <span *ngIf="controlDir.control.errors?.required">{{label}} is required</span>
+        <span *ngIf="controlDir.control.errors?.pattern && label == 'Email Address'">Invalid email address</span>
+        <span *ngIf="controlDir.control.errors?.pattern && label == 'Password'">Password must have at least 1 capital letter, 1 digit, 
+            1 special character and the length should be between 6-10 characters</span>
+    </div>
+
+    <!-- For async validator - email, use dirty so it prompt the error immediatelly -->
+    <div class="invalid-feedback d-block" *ngIf="(controlDir && controlDir.control && !controlDir.control.valid && controlDir.control.dirty)">
+        <span *ngIf="controlDir.control.errors?.emailExists">Email address is in use.</span>
+    </div>
+</div>
