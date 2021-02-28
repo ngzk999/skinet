@@ -56,7 +56,7 @@ namespace API.Controllers
             return _mapper.Map<Address, AddressDto>(user.Address);
         }
 
-        [HttpPut]
+        [HttpPut("address")]
         [Authorize]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
         {

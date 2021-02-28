@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Basket, IBasket, IBasketItem, IBasketTotals } from '../shared/models/basket';
 import { map } from 'rxjs/operators';
 import { IProduct } from '../shared/models/product';
+import { IDeliveryMethod } from '../shared/models/deliveryMethod';
 
 
 @Injectable({
@@ -16,6 +17,7 @@ export class BasketService {
   private basketTotalSource = new BehaviorSubject<IBasketTotals>(null);
   basket$ = this.basketSource.asObservable();
   basketTotal$ = this.basketTotalSource.asObservable();
+  shipping = 0;
 
   constructor(private http: HttpClient) {}
 
@@ -65,6 +67,7 @@ export class BasketService {
     const basket = this.getCurrentBasketValue();
     const foundItemIndex = basket.items.findIndex(i => i.id === item.id);
     basket.items[foundItemIndex].quantity++;
+    this.setBasket(basket);
   }
 
   // for decrement button
@@ -91,6 +94,13 @@ export class BasketService {
       }
     }
   }
+
+  deleteLocalBasket() {
+    this.basketSource.next(null);
+    this.basketTotalSource.next(null);
+    localStorage.removeItem('basket_id');
+  }
+
   deleteBasket(basket: IBasket) {
     return this.http.delete(this.baseUrl + 'basket?id=' + basket.id).subscribe(() => {
       localStorage.removeItem('basket_id');
@@ -99,6 +109,16 @@ export class BasketService {
     }, error => {
       console.log(error);
     });
+  }
+
+  setShippingPrice(deliveryMethod: IDeliveryMethod) {
+    this.shipping = deliveryMethod.price;
+    this.calculateTotals();
+  }
+
+  // helper method to access the value of basketSource
+  public getCurrentBasketValue(): IBasket {
+    return this.basketSource.value;
   }
 
   // mapper method to map IProduct to IBasketItem
@@ -121,15 +141,10 @@ export class BasketService {
     return basket;
   }
 
-  // helper method to access the value of basketSource
-  private getCurrentBasketValue(): IBasket {
-    return this.basketSource.value;
-  }
-
   // method to calculate the total price
   private calculateTotals(): void {
     const basket = this.getCurrentBasketValue();
-    const shipping = 0;
+    const shipping = this.shipping;
     const subtotal = basket.items.reduce((a, b) => b.quantity * b.price + a, 0);
     const total = shipping + subtotal;
     this.basketTotalSource.next({shipping, subtotal, total});
