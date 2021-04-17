@@ -44,7 +44,7 @@ namespace API.Controllers
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-            var orders = await _orderService.GetOrdersForUserAsync(email);
+            IReadOnlyList<Order> orders = await _orderService.GetOrdersForUserAsync(email);
 
             if(orders == null) return NotFound(new ApiResponse(404));
 

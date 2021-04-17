@@ -1,18 +1,18 @@
-<ng-container *ngIf="basket$ | async">
+<ng-container *ngIf="items.length > 0">
     <div class="table-responsive">
-        <table class="table">
-            <thead>
+        <table class="table table-borderless">
+            <thead [class.thead-light]="isBasket || isOrder" class="border-0 py-2">
                 <tr>
-                    <th class="border-0 " scope="col" [class.bg-light]="isBasket">
+                    <th class="border-0 " scope="col">
                         <div class="p-2 px-3 text-uppercase">Product</div>
                     </th>
-                    <th class="border-0" scope="col" [class.bg-light]="isBasket">
+                    <th class="border-0" scope="col">
                         <div class="py-2 text-uppercase">Price</div>
                     </th>
-                    <th class="border-0" scope="col" [class.bg-light]="isBasket">
+                    <th class="border-0" scope="col">
                         <div class="py-2 text-uppercase">Quantity</div>
                     </th>
-                    <th class="border-0" scope="col" [class.bg-light]="isBasket">
+                    <th class="border-0" scope="col">
                         <div class="py-2 text-uppercase">Total</div>
                     </th>
                     <th *ngIf="isBasket" class="border-0 bg-light" scope="col">
@@ -21,15 +21,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of (basket$ | async).items">
+                <tr *ngFor="let item of items" class="border-0">
                     <th scope="row">
-                        <div class="p-2">
+                        <div class="p-0">
                             <img src="{{item.pictureUrl}}" alt="{{item.productName}}" class="img-fluid" style="max-height: 50px;">
                             <div class="ml-3 d-inline-block align-middle">
                                 <h5 class="mb-0">
                                     <a routerLink="/shop/{{item.id}}" class="text-dark">{{item.productName}}</a>
-                                    <div class="text-muted font-italic font-weight-normal">Type: {{item.type}}</div>
                                 </h5>
+                                <span *ngIf="item.type" class="text-muted font-weight-normal font-italic d-block">
+                                    Type: {{item.type}}
+                                </span>
                             </div>
                         </div>
                     </th>
@@ -37,9 +39,9 @@
                         <strong>{{item.price | currency: 'RM '}}</strong>
                     </td>
                     <td class="align-middle">
-                        <div class="d-flex justify-content-start align-items-center">
+                        <div class="d-flex align-items-center" [class.justify-content-center]="!isBasket">
                             <i *ngIf="isBasket" (click)="decrementBasketItem(item)" class="fa fa-minus-circle text-warning mr-2" style="cursor: pointer; font-size: 2em;"></i>
-                            <span class="font-weight-bold" style="font-weight: 1.5em;" [class.justify-content-center]="!isBasket">{{item.quantity}}</span>
+                            <span class="font-weight-bold" style="font-weight: 1.5em;" >{{item.quantity}}</span>
                             <i *ngIf="isBasket" (click)="incrementBasketItem(item)" class="fa fa-plus-circle text-warning mx-2" style="cursor: pointer; font-size: 2em"></i>
                         </div>
                     </td>

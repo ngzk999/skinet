@@ -11,11 +11,13 @@ export interface IOrder {
     buyerEmail:      string;
     orderDate:       string;
     shipToAddress:   IAddress;
+    shippingPrice:   number;
     deliveryMethod:  string;
     orderItems:      IOrderItem[];
-    subtotal:        number;
+    subTotal:        number;
     status:          number;
     paymentIntentId: string;
+    total:           number;
 }
 
 export interface IOrderItem {
