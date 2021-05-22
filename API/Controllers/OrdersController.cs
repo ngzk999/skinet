@@ -42,13 +42,13 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
         {
-            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+            var email = User.RetrieveEmailFromPrincipal();
 
-            IReadOnlyList<Order> orders = await _orderService.GetOrdersForUserAsync(email);
+            var orders = await _orderService.GetOrdersForUserAsync(email);
 
             if(orders == null) return NotFound(new ApiResponse(404));
 
-            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
+            return Ok(_mapper.Map<IReadOnlyList<OrderToReturnDto>>(orders));
         }
 
         [HttpGet("{id}")]

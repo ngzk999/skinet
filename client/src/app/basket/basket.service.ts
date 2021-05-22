@@ -11,6 +11,7 @@ import { IDeliveryMethod } from '../shared/models/deliveryMethod';
 @Injectable({
   providedIn: 'root',
 })
+
 export class BasketService {
   baseUrl = environment.apiUrl;
   private basketSource = new BehaviorSubject<IBasket>(null);
@@ -21,12 +22,23 @@ export class BasketService {
 
   constructor(private http: HttpClient) {}
 
+  // to create paymentIntent when user click the Payment button in review
+  createOrUpdatePaymentIntent(){
+    return this.http.post(this.baseUrl + 'payments/' + this.getCurrentBasketValue().id, {})
+      .pipe(
+        map((basket: IBasket) => {
+          this.basketSource.next(basket);
+        })
+      )
+  }
+
   // used to initialized the basket
   getBasket(id: string): Observable<void>{
     return this.http.get(this.baseUrl + 'basket?id=' + id)
       .pipe(
         map((basket: IBasket) => {
           this.basketSource.next(basket);
+          this.shipping = basket.shippingPrice;
           this.calculateTotals();
         })
       );
@@ -113,7 +125,11 @@ export class BasketService {
 
   setShippingPrice(deliveryMethod: IDeliveryMethod) {
     this.shipping = deliveryMethod.price;
+    const basket = this.getCurrentBasketValue();
+    basket.deliveryMethodId = deliveryMethod.id;
+    basket.shippingPrice = basket.shippingPrice;
     this.calculateTotals();
+    this.setBasket(basket);
   }
 
   // helper method to access the value of basketSource
